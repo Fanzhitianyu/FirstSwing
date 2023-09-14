@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // https://mavenlibs.com/maven/dependency/com.alibaba/easyexcel
+    implementation 'com.alibaba:easyexcel:3.3.2'
+
+    // https://mavenlibs.com/maven/dependency/com.formdev/flatlaf
+    implementation 'com.formdev:flatlaf:3.2'
+
+    // https://mavenlibs.com/maven/dependency/com.formdev/flatlaf-extras
+    implementation 'com.formdev:flatlaf-extras:3.2'
+
+    // https://mavenlibs.com/maven/dependency/com.formdev/flatlaf-intellij-themes
+    implementation 'com.formdev:flatlaf-intellij-themes:3.2'
+
+    // https://mavenlibs.com/maven/dependency/org.slf4j/slf4j-nop
+    implementation 'org.slf4j:slf4j-nop:2.0.7'
+}
+
+test {
+    useJUnitPlatform()
+}
