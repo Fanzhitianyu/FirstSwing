@@ -1,5 +1,6 @@
 package org.example.frame;
 
+import com.alibaba.excel.util.ListUtils;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme;
 import com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme;
@@ -12,6 +13,9 @@ import javax.crypto.spec.PSource;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class MainFrame {
     public static JFrame frame;
@@ -19,6 +23,8 @@ public class MainFrame {
     private static final JLabel Title=new JLabel("English");
     private static final JTextField InputEnglish=new JTextField(50);
     public static void load(){
+        ExcelController.readExcel();
+
         FlatLightLaf.setup();//主题设置+
         FlatLightFlatIJTheme.setup();
         try {
@@ -46,7 +52,7 @@ public class MainFrame {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                ExcelController.writeExcel();
+
                 super.windowClosing(e);
             }
         });
@@ -109,11 +115,39 @@ public class MainFrame {
                 super.keyTyped(e);
                 if (e.getKeyChar()==KeyEvent.VK_ENTER)
                 {
-                    ExcelController.readExcel();
+                    List<EnglishData> delList= ListUtils.newArrayList();
+                    List<EnglishData> addList= ListUtils.newArrayList();
                     //System.out.println(InputEnglish.getText()+"\n");
-                    for (EnglishData data:EnglishData.getdataList()){
-                        System.out.println(data.getEnglish()+"-"+data.getTimes());
+                    if (EnglishData.getdataList()!=null){
+                        for (EnglishData data:EnglishData.getdataList()){
+                           if (data.getEnglish()!=null&&data.getEnglish().equals(InputEnglish.getText())){
+                               delList.add(data);
+                               addList.add(new EnglishData(data.getEnglish(),data.getTimes()+1));
+                               //System.out.println(data.getEnglish()+"-"+data.getTimes());
+                           }
+                        }
+                        if (addList.isEmpty()){
+                            if (InputEnglish.getText()!=null) {
+                                addList.add(new EnglishData(InputEnglish.getText(), 1));
+                            }
+                        }
+                        //data.Times();
                     }
+                    else {
+                        if (InputEnglish.getText()!=null) {
+                            addList.add(new EnglishData(InputEnglish.getText(), 1));
+                        }
+                    }
+                    for (EnglishData data:addList){
+                        System.out.println(data.getEnglish()+data.getTimes());
+                    }
+
+                    InputEnglish.setText("");
+                    EnglishData.getdataList().removeAll(delList);
+                    EnglishData.getdataList().addAll(addList);
+                    addList.clear();
+                    delList.clear();
+                    ExcelController.writeExcel();
                 }
             }
         });

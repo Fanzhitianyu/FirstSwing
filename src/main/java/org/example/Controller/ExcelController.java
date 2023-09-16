@@ -2,8 +2,11 @@ package org.example.Controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.read.listener.ReadListener;
 import org.example.Data.EnglishData;
+
+import java.io.FileNotFoundException;
 
 public class ExcelController {
     private static String Path="C:\\";
@@ -23,21 +26,17 @@ public class ExcelController {
     }
 
     public static void writeExcel(){
-        EasyExcel.write(getPath()+getFileName()+".xlsx", EnglishData.class).sheet("English").doWrite(EnglishData.getdataList());
+        EasyExcel.write("D:\\WordList.xlsx", EnglishData.class).sheet(0).doWrite(EnglishData.getdataList());
     }
 
     public static void readExcel(){
-        EasyExcel.read(getPath() + getFileName() + ".xlsx", EnglishData.class, new ReadListener<EnglishData>() {
-            @Override
-            public void invoke(EnglishData data, AnalysisContext context) {
+        EasyExcel.read("D:\\WordList.xlsx", EnglishData.class,new PageReadListener<EnglishData>(dataList->
+        {
+            for (EnglishData data:dataList){
+                System.out.println(data.getEnglish());
                 EnglishData.addEnglishDataList(data);
             }
-
-            @Override
-            public void doAfterAllAnalysed(AnalysisContext context) {
-
-            }
-        }).sheet().doRead();
+        })).sheet().doRead();
     }
 
 
